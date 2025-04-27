@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Hostel Management System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .student-info {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .student-info h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .student-info p {
+            margin: 10px 0;
+            color: #666;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-bottom: -1px;
+        }
+        
+        .tab.active {
+            background-color: #fff;
+            border-color: #ddd;
+            border-radius: 4px 4px 0 0;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .room-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+            margin-bottom: 20px;
+        }
+        
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .room-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .room-info {
+            padding: 20px;
+        }
+        
+        .room-info h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+        
+        .room-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .room-actions {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn-book {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+            font-size: 1.1em;
+        }
+        
+        .btn-book:hover {
+            background-color: #1976D2;
+        }
+        
+        .btn-book:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .applications-section {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .application-card {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .application-card:last-child {
+            margin-bottom: 0;
+        }
+        
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .application-details {
+            margin-bottom: 15px;
+        }
+        
+        .status-pending {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        .status-approved {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .status-rejected {
+            color: #f44336;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Hostel Management System</h1>
+            <nav>
+                <ul>
+                    <li><a href="student-login.html">Home</a></li>
+                    <li><a href="#" id="logoutBtn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>Student Dashboard</h2>
+            <p>Welcome, <span id="studentName">Student</span>!</p>
+        </div>
+
+        <div class="student-info">
+            <h3>Student Information</h3>
+            <p><strong>Student ID:</strong> <span id="studentId">-</span></p>
+            <p><strong>Phone Number:</strong> <span id="phoneNumber">-</span></p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="rooms">Available Rooms</div>
+            <div class="tab" data-tab="applications">My Applications</div>
+        </div>
+
+        <div class="tab-content active" id="rooms-content">
+            <div class="room-grid" id="roomGrid">
+                <!-- Room cards will be dynamically added here -->
+            </div>
+        </div>
+
+        <div class="tab-content" id="applications-content">
+            <div class="applications-section">
+                <h3>My Booking Applications</h3>
+                <div id="applicationsList">
+                    <!-- Applications will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="booking-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeBookingModal()">&times;</span>
+            <h2>Book Room</h2>
+            <form id="bookingForm" class="booking-form">
+                <div class="form-group">
+                    <label for="roomType">Room Type:</label>
+                    <input type="text" id="roomType" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="roomNumber">Room Number:</label>
+                    <input type="text" id="roomNumber" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="checkInDate">Check-in Date:</label>
+                    <input type="date" id="checkInDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="checkOutDate">Check-out Date:</label>
+                    <input type="date" id="checkOutDate" required>
+                </div>
+                <button type="submit" class="btn-book">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        function checkAuth() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser || currentUser.role !== 'student') {
+                window.location.href = 'student-login.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Load student profile
+        function loadProfile() {
+            if (!checkAuth()) return;
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userDetails = users.find(u => u.id === currentUser.id);
+            
+            if (userDetails) {
+                document.getElementById('studentName').textContent = userDetails.fullName || 'Student';
+                document.getElementById('studentId').textContent = userDetails.studentId || '-';
+                document.getElementById('phoneNumber').textContent = userDetails.phone || '-';
+            }
+        }
+
+        // Initialize rooms data if not exists
+        function initializeRooms() {
+            if (!localStorage.getItem('rooms')) {
+                const rooms = [
+                    {
+                        id: 1,
+                        number: '101',
+                        type: 'Single Room',
+                        image: 'images/one in a room.jpeg',
+                        isBooked: false
+                    },
+                    {
+                        id: 2,
+                        number: '102',
+                        type: 'Double Room',
+                        image: 'images/2 in a room.jpg',
+                        isBooked: false
+                    },
+                    {
+                        id: 3,
+                        number: '103',
+                        type: 'Triple Room',
+                        image: 'images/3 in a room.jpeg',
+                        isBooked: false
+                    },
+                    {
+                        id: 4,
+                        number: '104',
+                        type: 'Quad Room',
+                        image: 'images/4 in a room.jpeg',
+                        isBooked: false
+                    },
+                    {
+                        id: 5,
+                        number: '105',
+                        type: 'Six Person Room',
+                        image: 'images/6 in a room.jpg',
+                        isBooked: false
+                    },
+                    {
+                        id: 6,
+                        number: '106',
+                        type: 'Ten Person Room',
+                        image: 'images/10 in aroom.jpeg',
+                        isBooked: false
+                    },
+                    {
+                        id: 7,
+                        number: '107',
+                        type: 'Luxury Suite',
+                        image: 'images/Suite.webp',
+                        isBooked: false
+                    },
+                    {
+                        id: 8,
+                        number: '108',
+                        type: 'Standard Room',
+                        image: 'images/hostel.jpeg',
+                        isBooked: false
+                    }
+                ];
+                localStorage.setItem('rooms', JSON.stringify(rooms));
+            }
+        }
+
+        // Load available rooms
+        function loadRooms() {
+            if (!checkAuth()) return;
+            
+            const rooms = JSON.parse(localStorage.getItem('rooms')) || [];
+            const roomGrid = document.getElementById('roomGrid');
+            roomGrid.innerHTML = '';
+            
+            rooms.forEach(room => {
+                if (!room.isBooked) {
+                    const roomCard = createRoomCard(room);
+                    roomGrid.appendChild(roomCard);
+                }
+            });
+        }
+
+        // Create room card element
+        function createRoomCard(room) {
+            const card = document.createElement('div');
+            card.className = 'room-card';
+            
+            card.innerHTML = `
+                <img src="${room.image}" alt="Room ${room.number}" class="room-image">
+                <div class="room-info">
+                    <h3>Room ${room.number}</h3>
+                    <p><strong>Type:</strong> ${room.type}</p>
+                </div>
+                <div class="room-actions">
+                    <button class="btn-book" onclick="redirectToBooking(${room.id})">Book Now</button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Redirect to booking page
+        function redirectToBooking(roomId) {
+            if (!checkAuth()) return;
+            
+            const rooms = JSON.parse(localStorage.getItem('rooms')) || [];
+            const room = rooms.find(r => r.id === roomId);
+            
+            if (room.isBooked) {
+                alert('This room is already booked.');
+                return;
+            }
+            
+            // Store room details in sessionStorage for the booking page
+            sessionStorage.setItem('selectedRoom', JSON.stringify(room));
+            
+            // Redirect to booking page
+            window.location.href = 'room-booking.html';
+        }
+
+        // Load student's applications
+        function loadApplications() {
+            if (!checkAuth()) return;
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const applications = JSON.parse(localStorage.getItem('applications')) || [];
+            const userApplications = applications.filter(app => app.userId === currentUser.id);
+            
+            const applicationsList = document.getElementById('applicationsList');
+            applicationsList.innerHTML = '';
+            
+            if (userApplications.length === 0) {
+                applicationsList.innerHTML = '<p>You have not submitted any booking applications yet.</p>';
+                return;
+            }
+            
+            userApplications.forEach(application => {
+                const applicationCard = createApplicationCard(application);
+                applicationsList.appendChild(applicationCard);
+            });
+        }
+
+        // Create application card
+        function createApplicationCard(application) {
+            const card = document.createElement('div');
+            card.className = 'application-card';
+            
+            const statusClass = `status-${application.status}`;
+            
+            card.innerHTML = `
+                <div class="application-header">
+                    <h4>Application #${application.id}</h4>
+                    <span class="${statusClass}">${application.status.toUpperCase()}</span>
+                </div>
+                <div class="application-details">
+                    <p><strong>Room:</strong> ${application.roomNumber} (${application.roomType})</p>
+                    <p><strong>Check-in:</strong> ${application.checkInDate}</p>
+                    <p><strong>Check-out:</strong> ${application.checkOutDate}</p>
+                    <p><strong>Special Requests:</strong> ${application.specialRequests || 'None'}</p>
+                    <p><strong>Date Applied:</strong> ${new Date(application.date).toLocaleDateString()}</p>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Setup tabs
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    document.getElementById(`${tabId}-content`).classList.add('active');
+                    
+                    // Load content based on tab
+                    if (tabId === 'rooms') {
+                        loadRooms();
+                    } else if (tabId === 'applications') {
+                        loadApplications();
+                    }
+                });
+            });
+        }
+
+        // Show booking modal
+        function showBookingModal(roomId) {
+            const rooms = JSON.parse(localStorage.getItem('rooms')) || [];
+            const room = rooms.find(r => r.id === roomId);
+            
+            if (room) {
+                document.getElementById('roomType').value = room.type;
+                document.getElementById('roomNumber').value = room.number;
+                document.getElementById('bookingModal').style.display = 'block';
+                
+                // Store room ID for form submission
+                document.getElementById('bookingForm').dataset.roomId = roomId;
+            }
+        }
+
+        // Close booking modal
+        function closeBookingModal() {
+            document.getElementById('bookingModal').style.display = 'none';
+        }
+
+        // Handle booking form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const roomId = parseInt(this.dataset.roomId);
+            const checkInDate = document.getElementById('checkInDate').value;
+            const checkOutDate = document.getElementById('checkOutDate').value;
+            
+            if (!checkInDate || !checkOutDate) {
+                alert('Please select both check-in and check-out dates');
+                return;
+            }
+            
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const rooms = JSON.parse(localStorage.getItem('rooms')) || [];
+            const room = rooms.find(r => r.id === roomId);
+            
+            if (room.isBooked) {
+                alert('This room is already booked.');
+                return;
+            }
+            
+            // Create booking application
+            const application = {
+                id: Date.now(),
+                userId: currentUser.id,
+                roomId: roomId,
+                roomNumber: room.number,
+                roomType: room.type,
+                status: 'pending',
+                date: new Date().toISOString()
+            };
+            
+            // Save application
+            const applications = JSON.parse(localStorage.getItem('applications')) || [];
+            applications.push(application);
+            localStorage.setItem('applications', JSON.stringify(applications));
+            
+            // Mark room as booked
+            room.isBooked = true;
+            localStorage.setItem('rooms', JSON.stringify(rooms));
+            
+            alert('Room booking application submitted successfully!');
+            closeBookingModal();
+            loadRooms();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('bookingModal');
+            if (event.target === modal) {
+                closeBookingModal();
+            }
+        }
+
+        // Logout function
+        function logout() {
+            // Clear all user-related data from localStorage
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('token');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userName');
+            
+            // Redirect to login page
+            window.location.href = 'student-login.html';
+        }
+
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuth()) {
+                initializeRooms();
+                loadProfile();
+                loadRooms();
+                setupTabs();
+            }
+            
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        });
+    </script>
+</body>
+</html> 
